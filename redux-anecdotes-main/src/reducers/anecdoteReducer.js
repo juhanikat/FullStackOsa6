@@ -7,6 +7,9 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
+const filterAtStart = ""
+
+
 export const newAnecdoteAction = (content) => {
   return {
     type: "ADD_ANECDOTE",
@@ -18,6 +21,13 @@ export const voteAction = (id) => {
   return {
     type: "VOTE",
     payload: { id }
+  }
+}
+
+export const filterAction = (content) => {
+  return {
+    type: "CHANGE_FILTER",
+    payload: content
   }
 }
 
@@ -35,9 +45,10 @@ const asObject = (anecdote) => {
   }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
+const initialState = { anecdotes: anecdotesAtStart.map(asObject), filter: filterAtStart }
+console.log(initialState)
 
-const reducer = (state = initialState, action) => {
+export const anecdoteReducer = (state = anecdotesAtStart.map(asObject), action) => {
   switch (action.type) {
     case "VOTE": {
       const id = action.payload.id
@@ -54,4 +65,15 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export default reducer
+export const filterReducer = (state = filterAtStart, action) => {
+  switch (action.type) {
+    case "CHANGE_FILTER": {
+      const filter = action.payload
+      console.log(state.filter)
+      return { ...state, "filter": filter }
+     
+    }
+    default:
+      return state
+  }
+}
