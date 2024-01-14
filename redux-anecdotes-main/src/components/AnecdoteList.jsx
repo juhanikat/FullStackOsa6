@@ -7,10 +7,10 @@ let timeoutId = null
 const AnecdoteList = () => {
     const dispatch = useDispatch()
     const anecdotes = useSelector(state => {
-        if (state.filter === "") {
-            return state.anecdotes
+        if (state.filter.filter === "") {
+            return state.anecdotes.anecdotes
         }
-        return state.anecdotes.filter(anec => anec.content.includes(state.filter.filter))
+        return state.anecdotes.anecdotes.filter(anec => anec.content.includes(state.filter.filter))
     })
 
 

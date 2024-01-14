@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import anecdotes from "../services/anecdoteService"
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -9,7 +10,7 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-const getId = () => (100000 * Math.random()).toFixed(0)
+export const getId = () => (100000 * Math.random()).toFixed(0)
 
 const compareVotes = (firstAnec, secondAnec) => {
   return secondAnec.votes - firstAnec.votes
@@ -23,25 +24,29 @@ const asObject = (anecdote) => {
   }
 }
 
-const initialState = anecdotesAtStart.map(anec => asObject(anec))
+const initialState = { anecdotes: anecdotesAtStart.map(anec => asObject(anec)) }
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",
-  initialState,
+  initialState: { anecdotes: [] },
   reducers: {
     vote(state, action) {
       const id = action.payload
-      const anecdoteToVote = state.find(a => a.id === id)
+      const anecdoteToVote = state.anecdotes.find(a => a.id === id)
       const newAnec = { ...anecdoteToVote, "votes": anecdoteToVote.votes += 1 }
-      const changedAnecdotes = state.map(anec => anec.id !== id ? anec : newAnec)
+      const changedAnecdotes = state.anecdotes.map(anec => anec.id !== id ? anec : newAnec)
       changedAnecdotes.sort(compareVotes)
-      state = changedAnecdotes
+      state.anecdotes = changedAnecdotes
     },
     addAnecdote(state, action) {
-      state.push({ content: action.payload, id: getId(), votes: 0 })
+      state.anecdotes.push({ content: action.payload, id: getId(), votes: 0 })
+
+    },
+    addAllAnecdotes(state, action) {
+      return { anecdotes: action.payload }
     }
   }
 })
 
-export const { vote, addAnecdote } = anecdoteSlice.actions
+export const { vote, addAnecdote, addAllAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
